@@ -1,0 +1,219 @@
+<html>
+    <head>
+        <title>翻页轮播图片</title>
+<style>
+*{margin: 0;
+padding: 0;}
+#outer{
+    width:520px;
+      height:333px;
+      margin:50px auto;
+      background-color:greenyellow;
+      padding:10px 0;
+      position:relative;
+     overflow: hidden;
+
+}
+img{
+    width: 500px;
+    height: 333px;
+
+    }
+ul{
+    list-style: none;
+    width: 3640px;
+}
+.pic{
+    margin: 0 10px;
+    float: left;
+
+}
+#imgList{
+    position: absolute;
+    left: 0px;
+    
+}
+#navId{
+    position:absolute;
+
+     bottom:20px;
+     left:160px;
+     z-index: 1000;
+
+}
+a{
+    width: 20px;
+    height: 20px;
+    float:left;
+    background-color: black;
+    margin: 0 5px;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+a:hover{
+    background-color: brown;
+}
+
+.btn{
+    width: 40px;
+    height: 60px;
+    position: absolute;
+    top: 45%;
+    z-index: 1000;
+}
+#next{ right: 0;}
+#yestoy{left: 0;}
+
+</style>
+    </head>
+    <body>
+        <script>
+            window.onload=function(){
+                
+                
+                var imglist=document.getElementById("imgList")
+                var imglen=document.getElementsByTagName("img")
+                var next=document.getElementById("next")
+                var yestoy=document.getElementById("yestoy")
+                var alla=document.getElementsByTagName("a")
+                var index=0;
+                var time;
+
+                //获取需要的值
+             
+                function getStyle(obj,name){
+                    if(window.getComputedStyle){
+                        return getComputedStyle(obj,null)[name];
+                    }else{
+                        return obj.currenStyle[name];
+                    }
+                }
+                //翻到下一页动画
+                /*
+                *obj 对象
+                *attr 要改变的值
+                *target 目的地
+                *speed 速度
+                *
+                */
+                function xx(obj,attr,target,speed,callback){
+                    clearInterval(obj.time)
+                    var wz=parseInt(getStyle(obj,attr));
+                    if(wz>target){
+                        speed=-speed;
+                    }
+                    obj.time=setInterval(function(){
+                        var zuo=parseInt(getStyle(obj,attr));
+                        var newzuo=zuo+speed;
+                        if(speed<0 && newzuo<target || speed>0 && newzuo>target){
+                        newzuo=target
+                    }
+                    obj.style[attr]=newzuo+"px";
+                    if(newzuo==target){
+                        clearInterval(obj.time);
+                        callback && callback();
+                    }
+                    },30)
+                    
+                        
+                };
+                
+                
+                function seta(){
+                    if(index>=imglen.length-1){
+                        index=0;
+                        imglist.style.left=0;
+                    }
+                    for(var i=0;i<alla.length;i++){
+                        alla[i].style.backgroundColor="";
+                    }
+                    alla[index].style.backgroundColor="brown"
+
+                }
+                for(var i=0;i<alla.length;i++){
+                    alla[i].num=i;
+                    alla[i].onclick=function(){
+                        clearInterval(timer);
+                        index=this.num;
+                        seta();
+                        xx(imglist,"left",-520*index,30,function(){
+                            
+                            autoChange();
+                        });
+                        
+                    }
+
+                }
+            
+
+                //点击按钮下一张
+                next.onclick=function(){
+                    clearInterval(timer);
+                    index++;
+                    
+                    xx(imglist,"left",-520*index,30,function(){
+                        seta();
+                        autoChange();
+                    });
+                    
+                    
+                    
+                    //xx();
+                }
+                //点击按钮下一张
+                yestoy.onclick=function(){
+                    clearInterval(timer);
+                   index--;
+                   
+                    xx(imglist,"left",-520*index,30,function(){
+                        seta();
+                        autoChange();
+                    });
+                    
+                }
+                var timer;
+                function autoChange(){
+                    timer=setInterval(function(){
+                        index++;
+                        index%=imglen.length;
+                        
+                        xx(imglist,"left",-520*index,20,function(){seta();});
+                        
+                    },2000)
+                    
+                }
+                autoChange();
+
+                
+             
+            }
+        </script>
+
+
+        <div id="outer">
+            <ul id="imgList">
+                <li class="pic"><img src="images/0.jpg"></li>
+                <li class="pic"><img src="images/1.jpg"></li>
+                <li class="pic"><img src="images/2.jpg"></li>
+                <li class="pic"><img src="images/3.jpg"></li><!-- 增加这个为了实现轮播无缝切换 -->
+                <li class="pic"><img src="images/4.jpg"></li>
+                <li class="pic"><img src="images/5.jpg"></li>
+                <li class="pic"><img src="images/0.jpg"></li>
+            
+            </ul>
+            <button type="button" class="btn" id="yestoy"><</button>
+            <button type="button" class="btn" id="next">></button>
+        
+            <div id="navId">
+                <a style="background-color: brown;"></a>
+                <a></a>
+                <a></a>
+                <a></a>
+                <a></a>
+                <a></a>
+        
+            </div>
+        </div>
+    </body>
+</html>
